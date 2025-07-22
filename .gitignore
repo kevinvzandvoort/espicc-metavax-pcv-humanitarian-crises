@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Metavax specific files
+output
+output/*
+*_processed.RDS
+model/build
+model/build/*
