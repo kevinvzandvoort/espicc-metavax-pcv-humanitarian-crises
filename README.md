@@ -41,6 +41,7 @@ Once the model is compiled and loaded, we need to source three files:
 source("./functions.R")
 source("./data_load_all.R")
 source("./model_setup.R")
+
 model_params = modelSetup()
 ```
 
@@ -66,7 +67,7 @@ The model can then be ran once using the `runModel()` function, which takes a nu
 result_prevacc = runModel(
   model_params = model_params_prevac_current,
   initial_state = model_params$global_settings$initial_states,
-  steady_state = TRUE, parallel = parallel)
+  steady_state = TRUE)
 
 result_prevacc = result_prevacc$value
 ```
@@ -85,6 +86,6 @@ The fitted models are then used by the `./model_postvacc*` scripts to generate m
 
 -   `./model_postvacc_sensitivity.R`: runs the PCV campaigns for the parametric sensitivity analyses.
 
--   `./model_postvacc_2dose_infants.R:` runs a sensitivity analysis where we assumed two PCV doses in infants for all PCV campaigns.
+-   `./model_postvacc_2dose_infants.R`: runs a sensitivity analysis where we assumed two PCV doses in infants for all PCV campaigns.
 
 Finally, the modelled results are processed and tables and figures generated using the `./results*` scripts.
