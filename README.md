@@ -24,7 +24,10 @@ The `./data_load_all.R` script creates a list object named data, which is filled
 
 To run the model, we need to specify the location of the *Metavax* root folder in a `METAVAX_FOLDER` variable. We can then source the correct *Metavax* model implementation, which automatically compiles and loads the C++ code, and registers the number of compartments in R. The base model in our analysis uses the diamond-shaped streppneumo model:
 
-`METAVAX_FOLDER = "./model/metavax"source(sprintf("%s/model/metavax_streppneumo_diamond.R", METAVAX_FOLDER))`
+``` r
+METAVAX_FOLDER = "./model/metavax"
+source(sprintf("%s/model/metavax_streppneumo_diamond.R", METAVAX_FOLDER))
+```
 
 Once the model is compiled and loaded, we need to source three files:
 
@@ -34,7 +37,12 @@ Once the model is compiled and loaded, we need to source three files:
     -   .`/model_setup.R` defines a `modelSetup()` function, which returns model parameters set-up to run the base Digaale model with default values, and without vaccination.
     -   the model_parameters can be adapted using the `setParameter()` function, e.g. to add a vaccination campaign at a certain coverage value at a given timepoint (see the main *metavax* GitHub repository).
 
-`source("./functions.R")source("./data_load_all.R")source("./model_setup.R")model_params = modelSetup()`
+``` r
+source("./functions.R")
+source("./data_load_all.R")
+source("./model_setup.R")
+model_params = modelSetup()
+```
 
 The model can then be ran once using the `runModel()` function, which takes a number of required arguments:
 
@@ -54,9 +62,14 @@ The model can then be ran once using the `runModel()` function, which takes a nu
 
 -   `incidence`, a boolean to indicate whether model outputs should include incidence (in addition to prevalence)
 
-`result_prevacc = runModel(model_params = model_params_prevac_current,initial_state = model_params$global_settings$initial_states, steady_state = TRUE, parallel = parallel)`
+``` r
+result_prevacc = runModel(
+  model_params = model_params_prevac_current,
+  initial_state = model_params$global_settings$initial_states,
+  steady_state = TRUE, parallel = parallel)
 
-`result_prevacc = result_prevacc$value`
+result_prevacc = result_prevacc$value
+```
 
 ### **Replicating the analysis**
 
