@@ -1,6 +1,6 @@
 pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, readxl, magrittr, binom, qs, units, BayesianTools)
 
-.args = if(interactive()) c(getwd(), "../pcvm", "digaale", 2, 1) else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax", "digaale", 2, 1) else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir", "output_subdir", "chain", "i"))
 setwd(.args["wd"])
 

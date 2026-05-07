@@ -1,6 +1,6 @@
 pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, readxl, magrittr, binom, qs, units, BayesianTools)
 
-.args = if(interactive()) c(getwd(), "../pcvm", "vac_cov", 0.85, "simulations", 5) else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax", "vac_cov", 0.85, "simulations", 5) else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir", "sens_var", "sens_val", "output_simdir", "cores"))
 setwd(.args["wd"])
 

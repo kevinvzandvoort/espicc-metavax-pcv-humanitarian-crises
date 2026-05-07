@@ -7,7 +7,7 @@ pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, magr
 #'  1: working directory of pcvmr (make sure to setwd manually if running interactively)
 #'  2: working directory of pcvm
 #'  3: name of output folder to store objects (e.g. date, or specific scenario name)
-.args = if(interactive()) c(getwd(), "../pcvm") else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax") else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir"))
 setwd(.args["wd"])
 

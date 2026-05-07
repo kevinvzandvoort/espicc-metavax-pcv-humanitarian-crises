@@ -7,7 +7,7 @@ pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, magr
 #'  1: working directory of pcvmr (make sure to setwd manually if running interactively)
 #'  2: working directory of pcvm
 #'  3: name of output folder to store objects (e.g. date, or specific scenario name)
-.args = if(interactive()) c(getwd(), "../pcvm", "digaale", "simulations") else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax", "digaale", "simulations") else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir", "output_subdir", "output_simdir"))
 setwd(.args["wd"])
 
@@ -85,21 +85,20 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
                colour=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                fill=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                group = paste0(vaccine_strategy, age_group)))+
-    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~., scales="free")+
+    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("All ages", "Infants"))~., scales="free")+
     geom_ribbon(alpha=0.2, aes(ymin=low95, ymax=high95, colour = NULL))+
     geom_line(linewidth=2)+
     scale_colour_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
     scale_fill_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
     theme_minimal()+
-    labs(x="Years since PCV campaign", y="VT carriage prevalence", colour="Vaccine strategy", fill="Vaccine strategy")+
+    labs(x="Years since PCV campaign", y="VT carriage prevalence", colour="Vaccine strategy\n(1 dose in infants)", fill="Vaccine strategy\n(1 dose in infants)")+
     theme(legend.position="bottom", panel.grid.minor.y = element_blank(), strip.text = element_text(face="bold", size=14),
-          axis.title = element_text(size=14), axis.text = element_text(size = 12), legend.title = element_text(size = 14),
-          legend.text = element_text(size = 12), panel.spacing.y=unit(5, "mm"))+
+          axis.title = element_text(size=14),
+          axis.text = element_text(size = 13),
+          legend.title = element_text(size = 14),
+          legend.text = element_text(size = 13), panel.spacing.y=unit(5, "mm"))+
     scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5) * 365, labels = paste0(c("0", 1, 2, 3, 4, 5), "y"))+
-    scale_y_continuous(labels = scales::percent, lim=c(0, NA))+
-    geom_vline(data=data.table(age_group = factor("[0y, 1y)", c("[0y, 120y)", "[0y, 1y)")), time = 1*365),
-               aes(xintercept=time, x=NULL, colour=NULL, fill=NULL, group=NULL),
-               colour="#000000", linewidth=1, linetype=2))
+    scale_y_continuous(labels = scales::percent, lim=c(0, NA)))
 
 (plot_incidence_impact = posterior_runs_summarized_impact %>%
     rbind(data.table(age_group=factor("[0y, 1y)", c("[0y, 120y)", "[0y, 1y)")), vaccine_strategy="<0"), fill=TRUE) %>%
@@ -107,20 +106,18 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
                colour=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                fill=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                group = paste0(vaccine_strategy, age_group)))+
-    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~., scales="free")+
+    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("All ages", "Infants"))~., scales="free")+
     geom_ribbon(alpha=0.2, aes(ymin=low95, ymax=high95, colour = NULL))+
     geom_line(size=2)+
     scale_colour_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
     scale_fill_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
-    theme_minimal()+labs(x="Years since PCV campaign", y="Daily impact on severe\npneumococcal disease cases", colour="Vaccine strategy", fill="Vaccine strategy")+
+    theme_minimal()+labs(x="Years since PCV campaign", y="Daily impact on severe\npneumococcal disease cases", colour="Vaccine strategy\n(1 dose in infants)", fill="Vaccine strategy\n(1 dose in infants)")+
     theme(legend.position="bottom", panel.grid.minor.y = element_blank(), strip.text = element_text(face="bold", size=14),
-          axis.title = element_text(size=14), axis.text = element_text(size = 12), legend.title = element_text(size = 14),
-          legend.text = element_text(size = 12), panel.spacing.y=unit(5, "mm"))+
+          axis.title = element_text(size=14),
+          axis.text = element_text(size = 13), legend.title = element_text(size = 14),
+          legend.text = element_text(size = 13), panel.spacing.y=unit(5, "mm"))+
     scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5) * 365, labels = paste0(c("0", 1, 2, 3, 4, 5), "y"))+
-    scale_y_continuous(labels = scales::percent, lim=c(0, NA))+
-    geom_vline(data=data.table(age_group = factor("[0y, 1y)", c("[0y, 120y)", "[0y, 1y)")), time = 1*365),
-               aes(xintercept=time, x=NULL, colour=NULL, fill=NULL, group=NULL),
-               colour="#000000", linewidth=1, linetype=2))
+    scale_y_continuous(labels = scales::percent, lim=c(0, NA)))
 
 (plot_incidence_impact_3y = incidence_impact_relative_impact %>%
     .[time == 3] %>%
@@ -128,7 +125,7 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
                y = value,
                colour = factor(as.character(scenario_doses)),
                fill = factor(as.character(scenario_doses))))+
-    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~., scales="free")+
+    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("All ages", "Infants"))~., scales="free")+
     geom_lv(varwidth = TRUE,
             width.method = "height",
             aes(alpha = after_stat(LV)),
@@ -141,8 +138,8 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
     scale_y_continuous(labels = scales::percent)+
     scale_colour_manual(values = c("1" = lshtm_colours$purple, "2" = lshtm_colours$pink))+
     scale_fill_manual(values = c("1" = lshtm_colours$purple, "2" = lshtm_colours$pink))+
-    labs(colour = "Number of doses in infants",
-         fill = "Number of doses in infants",
+    labs(colour = "PCV doses in infants",
+         fill = "PCV doses in infants",
          x = "Vaccination strategy",
          y= "Cumulative impact on severe\npneumococcal disease cases over 3 years")+
     guides(alpha = "none")+
@@ -150,8 +147,8 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
           panel.grid.minor.y = element_blank(),
           strip.text = element_text(face="bold", size=14),
           axis.title = element_text(size=14),
-          axis.text = element_text(size = 12),
-          axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+          axis.text = element_text(size = 13),
+          axis.text.x = element_text(size = 13, angle = 45, hjust = 1),
           legend.title = element_text(size = 14),
           legend.text = element_text(size = 12),
           panel.border = element_rect(size=1, fill="#FFFFFF00")))
@@ -164,4 +161,10 @@ incidence_impact_relative_impact = readRDS(sprintf("%s/plotdata_incidence_impact
     theme(legend.position="bottom"))
 ggsave(plot_fig2, filename = sprintf("%s/figure_prevalence_incidence_doses.png", OUTPUT_RESULTSFOLDER),
        width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF")
-
+ggsave(plot_fig2, filename = sprintf("%s/figure_prevalence_incidence_doses.eps", OUTPUT_RESULTSFOLDER),
+       width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF")
+ggsave(plot_fig2, filename = sprintf("%s/figure_prevalence_incidence_doses.tiff", OUTPUT_RESULTSFOLDER),
+       width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF", dpi = 300)
+#rename to tif for PLOS Med file extension
+file.rename(sprintf("%s/figure_prevalence_incidence_doses.tiff", OUTPUT_RESULTSFOLDER),
+            sprintf("%s/figure_prevalence_incidence_doses.tif", OUTPUT_RESULTSFOLDER))

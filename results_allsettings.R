@@ -7,7 +7,7 @@ pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, magr
 #'  1: working directory of pcvmr (make sure to setwd manually if running interactively)
 #'  2: working directory of pcvm
 #'  3: name of output folder to store objects (e.g. date, or specific scenario name)
-.args = if(interactive()) c(getwd(), "../pcvm", "simulations") else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax", "simulations") else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir", "output_simdir"))
 setwd(.args["wd"])
 
@@ -57,25 +57,22 @@ setting_names = c(digaale = "Digaale (base scenario)",
                   maiduguri_acute = "Maiduguri")
 
 (plot_prevalence = plotdata_prevalence %>%
-  ggplot(aes(x=time, y=med,
-             colour=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
-             fill=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
-             group = paste0(vaccine_strategy, age_group)))+
-  facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~factor(setting, names(setting_names), setting_names), scales="free")+
-  geom_ribbon(alpha=0.2, aes(ymin=low95, ymax=high95, colour = NULL))+
-  geom_line(linewidth=2)+
-  scale_colour_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
-  scale_fill_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
-  theme_minimal()+
-  labs(x="Years since PCV campaign", y="VT carriage prevalence", colour="Vaccine strategy", fill="Vaccine strategy")+
-  theme(legend.position="bottom", panel.grid.minor.y = element_blank(), strip.text = element_text(face="bold", size=14),
-        axis.title = element_text(size=14), axis.text = element_text(size = 12), legend.title = element_text(size = 14),
-        legend.text = element_text(size = 12), panel.spacing.y=unit(5, "mm"))+
-  scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5) * 365, labels = paste0(c("0", 1, 2, 3, 4, 5), "y"))+
-  scale_y_continuous(labels = scales::percent, lim=c(0, NA))+
-  geom_vline(data=data.table(age_group = factor("[0y, 1y)", c("[0y, 120y)", "[0y, 1y)")), time = 1*365),
-             aes(xintercept=time, x=NULL, colour=NULL, fill=NULL, group=NULL),
-             colour="#000000", linewidth=1, linetype=2))
+    ggplot(aes(x=time, y=med,
+               colour=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
+               fill=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
+               group = paste0(vaccine_strategy, age_group)))+
+    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("All ages", "Infants"))~factor(setting, names(setting_names), setting_names), scales="free")+
+    geom_ribbon(alpha=0.2, aes(ymin=low95, ymax=high95, colour = NULL))+
+    geom_line(linewidth=2)+
+    scale_colour_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
+    scale_fill_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
+    theme_minimal()+
+    labs(x="Years since PCV campaign", y="VT carriage prevalence", colour="Vaccine strategy", fill="Vaccine strategy")+
+    theme(legend.position="bottom", panel.grid.minor.y = element_blank(), strip.text = element_text(face="bold", size=14),
+          axis.title = element_text(size=14), axis.text = element_text(size = 13), legend.title = element_text(size = 14),
+          legend.text = element_text(size = 12), panel.spacing.y=unit(5, "mm"))+
+    scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5) * 365, labels = paste0(c("0", 1, 2, 3, 4, 5), "y"))+
+    scale_y_continuous(labels = scales::percent, lim=c(0, NA)))
 
 ggsave(plot_prevalence, filename = sprintf("%s/figure_prevalence_allsettings.png", OUTPUT_FOLDER),
        width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF")
@@ -85,14 +82,14 @@ ggsave(plot_prevalence, filename = sprintf("%s/figure_prevalence_allsettings.png
                colour=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                fill=factor(vaccine_strategy, vaccination_strategies_plot_settings$model_name, vaccination_strategies_plot_settings$name),
                group = paste0(vaccine_strategy, age_group)))+
-    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~factor(setting, names(setting_names), setting_names), scales="free")+
+    facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("All ages", "Infants"))~factor(setting, names(setting_names), setting_names), scales="free")+
     geom_ribbon(alpha=0.2, aes(ymin=low95, ymax=high95, colour = NULL))+
     geom_line(size=2)+
     scale_colour_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
     scale_fill_manual(values = vaccination_strategies_plot_settings[, c("name", "colour")] %>% as.matrix("name") %>% .[,1])+
     theme_minimal()+labs(x="Years since PCV campaign", y="Daily impact on severe\npneumococcal disease cases", colour="Vaccine strategy", fill="Vaccine strategy")+
     theme(legend.position="bottom", panel.grid.minor.y = element_blank(), strip.text = element_text(face="bold", size=14),
-          axis.title = element_text(size=14), axis.text = element_text(size = 12), legend.title = element_text(size = 14),
+          axis.title = element_text(size=14), axis.text = element_text(size = 13), legend.title = element_text(size = 14),
           legend.text = element_text(size = 12), panel.spacing.y=unit(5, "mm"))+
     scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5) * 365, labels = paste0(c("0", 1, 2, 3, 4, 5), "y"))+
     scale_y_continuous(labels = scales::percent, lim=c(0, NA))+
@@ -102,6 +99,13 @@ ggsave(plot_prevalence, filename = sprintf("%s/figure_prevalence_allsettings.png
 
 ggsave(plot_incidence, filename = sprintf("%s/figure_incidence_allsettings.png", OUTPUT_FOLDER),
        width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF")
+ggsave(plot_incidence, filename = sprintf("%s/figure_incidence_allsettings.eps", OUTPUT_RESULTSFOLDER),
+       width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF")
+ggsave(plot_incidence, filename = sprintf("%s/figure_incidence_allsettings.tiff", OUTPUT_RESULTSFOLDER),
+       width = PLOT_WIDTH_ONE, height = PLOT_HEIGHT_ONE, units = "in", bg = "#FFFFFF", dpi = 300)
+#rename to tif for PLOS Med file extension
+file.rename(sprintf("%s/figure_incidence_allsettings.tiff", OUTPUT_RESULTSFOLDER),
+            sprintf("%s/figure_incidence_allsettings.tif", OUTPUT_RESULTSFOLDER))
 
 (plot_cum_incidence_impact = plotdata_cum_incidence %>%
     ggplot(aes(x=time, y=med,
