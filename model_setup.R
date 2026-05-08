@@ -116,9 +116,13 @@ modelSetup = function(contact_data = list(data$demography$digaale$displaced$cont
     setParameter(level = "population", population = "all", key = "adjust_acq_start", value = -1) %>%
     setParameter(level = "population", population = "all", key = "adjust_acq_stop", value = 1e6) %>%
     setParameter(level = "population", population = c("idp_malnourished"),
-                 key = "adjust_acq", value = maln_rr_transmission) %>%
+                 key = "adjust_acq_vt", value = maln_rr_transmission) %>%
+    setParameter(level = "population", population = c("idp_malnourished"),
+                 key = "adjust_acq_nvt", value = maln_rr_transmission) %>%
     setParameter(level = "population", population = c("idp_non_malnourished"),
-                 key = "adjust_acq", value = null_rr) %>%
+                 key = "adjust_acq_vt", value = null_rr) %>%
+    setParameter(level = "population", population = c("idp_non_malnourished"),
+                 key = "adjust_acq_nvt", value = null_rr) %>%
     setParameter(level = "population", population = c("idp_malnourished", "idp_non_malnourished"),
                  key = "betaVT", value = displaced_contact_matrix_model %>% t) %>%
     setParameter(level = "population", population = c("idp_malnourished", "idp_non_malnourished"),
@@ -142,9 +146,13 @@ modelSetup = function(contact_data = list(data$demography$digaale$displaced$cont
       setParameter(level = "population", population = "host_non_malnourished", key = "N",
                    value = host_population_size_model[, value] * (1 - prop_malnourished[2])) %>%
       setParameter(level = "population", population = c("host_malnourished"),
-                   key = "adjust_acq", value = maln_rr_transmission) %>%
+                   key = "adjust_acq_vt", value = maln_rr_transmission) %>%
+      setParameter(level = "population", population = c("host_malnourished"),
+                   key = "adjust_acq_nvt", value = maln_rr_transmission) %>%
       setParameter(level = "population", population = c("host_non_malnourished"),
-                   key = "adjust_acq", value = null_rr) %>%
+                   key = "adjust_acq_vt", value = null_rr) %>%
+      setParameter(level = "population", population = c("host_non_malnourished"),
+                   key = "adjust_acq_nvt", value = null_rr) %>%
       setParameter(level = "population", population = c("host_malnourished", "host_non_malnourished"),
                    key = "betaVT", value = displaced_contact_matrix_model %>% t) %>%
       setParameter(level = "population", population = c("host_malnourished", "host_non_malnourished"),
