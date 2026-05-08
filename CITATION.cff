@@ -1,0 +1,75 @@
+# YAML 1.2
+---
+authors:
+  -
+    affiliation: "Department of Infectious Disease Epidemiology, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: "van Zandvoort"
+    given-names: Kevin
+    orcid: "https://orcid.org/0000-0002-7770-0537"
+  -
+    affiliation: "Save the Children International, Somaliland"
+    family-names: Bobe
+    given-names: "Mohamed Omer"
+  -
+    affiliation: "Republic of Somaliland Ministry of Health Development, Somaliland"
+    family-names: Hassan
+    given-names: "Abdirahman Ibrahim"
+  -
+    affiliation: "Save the Children International, United Kingdom"
+    family-names: Cummings
+    given-names: "Rachael"
+  -
+    affiliation: "Department of Infectious Disease Epidemiology, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: Warsame
+    given-names: "Abdihamid"
+  -
+    affiliation: "Murdoch Children's Research Institute, Australia"
+    family-names: Pell
+    given-names: "Casey L"
+  -
+    affiliation: "Save the Children International, Somaliland"
+    family-names: Abdi
+    given-names: "Mohamed Ismail"
+  -
+    affiliation: "Save the Children International, Somaliland"
+    family-names: Ibrahim
+    given-names: "Saed"
+  -
+    affiliation: "Department of Public Health, Environments and Society, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: McGowan
+    given-names: "Catherine R"
+    orcid: "https://orcid.org/0000-0001-6941-6539"
+  -
+    affiliation: "Murdoch Children's Research Institute, Australia"
+    family-names: Mulholland
+    given-names: "E Kim"
+    orcid: "https://orcid.org/0000-0001-7947-680X"  
+  -
+    affiliation: "Murdoch Children's Research Institute, Australia"
+    family-names: Satzke
+    given-names: "Catherine"
+    orcid: "https://orcid.org/0000-0003-3164-8849"
+  -
+    affiliation: "Department of Infectious Disease Epidemiology, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: "Eggo"
+    given-names: "Rosalind M"
+    orcid: "https://orcid.org/0000-0002-0362-6717"  
+  -
+    affiliation: "Republic of Somaliland Ministry of Health Development, Somaliland"
+    family-names: Hergeye
+    given-names: "Mohamed Abdi"
+  -
+    affiliation: "Department of Infectious Disease Epidemiology, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: "Checchi"
+    given-names: "Francesco"
+    orcid: "https://orcid.org/0000-0001-9030-5382"
+  -
+    affiliation: "Department of Infectious Disease Epidemiology, London School of Hygiene & Tropical Medicine, United Kingdom"
+    family-names: "Flasche"
+    given-names: "Stefan"
+    orcid: "https://orcid.org/0000-0002-5808-2606"
+license: MIT
+message: "If you use this data, please cite it using these metadata."
+title: "Effectiveness of pneumococcal vaccination campaigns in humanitarian settings: a modelling study. Data, model code, and analyses."
+version: "v1.0.0"
+...
