@@ -22,7 +22,11 @@ data = list(
         data = getData("./data/epidemiology/prevalence/digaale_synflorix")),
       digaale_prevenar = list(
         source = "van Zandvoort K, Hassan AI, Bobe MO, Pell CL, Ahmed MS, Ortika BD, Ibrahim S, Abdi MI, Karim MA, Eggo RM, Ali SY. Pre-vaccination carriage prevalence of Streptococcus pneumoniae serotypes among internally displaced people in Somaliland: a cross-sectional study. Pneumonia. 2024 Dec 5;16(1):25. https://doi.org/10.1186/s41479-024-00148-6",
-        data = getData("./data/epidemiology/prevalence/digaale_prevenar"))),
+        data = getData("./data/epidemiology/prevalence/digaale_prevenar")),
+      kilifi_synflorix = list(
+        source = "",
+        data = getData("./data/epidemiology/prevalence/kenya_kilifi_synflorix")
+      )),
     clearance_rate = list(
       source = "Lipsitch M, Abdullahi O, D'Amour A, Xie W, Weinberger DM, Tchetgen ET, Scott JA. Estimating rates of carriage acquisition and clearance and competitive ability for pneumococcal serotypes in Kenya with a Markov transition model. Epidemiology. 2012 Jul 1;23(4):510-9. https://doi.org/10.1097/ede.0b013e31824f2f32",
       data = getData("./data/epidemiology/clearance_rate/kenya_kilifi")),
@@ -172,7 +176,32 @@ data = list(
           source = "N/A",
           data = setAgeBreaks(0) %>% .[, value := 0]))),
     kilifi = list(
+      displaced = list(
+        population_data = list(
+          source = "UN WPP",
+          data = getData("./data/demography/kilifi/population_size")),
+        contact_data = list(
+          source = "Kiti, M.C., Kinyanjui, T.M., Koech, D.C., Munywoki, P.K., Medley, G.F. and Nokes, D.J., 2014. Quantifying age-related rates of social contact using diaries in a rural coastal population of Kenya. PloS one, 9(8), p.e104786.",
+          data = getData("./data/demography/digaale/contact_matrix_displaced")),
+        contacts_extra_host = list(
+          source = "Assume same as Digaale",
+          data = setAgeBreaks(0) %>% .[, value := 0.02658532]),
+        household_size = list(
+          source = "Assume same as Digaale",
+          data = setAgeBreaks(0) %>% .[, value := 4.5]),
+        malnourished = list(
+          source = "County Department of Health. Kilifi County SMART Survey Report. 2016. https://www.nutritionhealth.or.ke/wpcontent/uploads/SMART%20Survey%20Reports/Kilifi%20County%20SMART%20Survey% 20Report%20November2016.pdf.",
+          data = setAgeBreaks(0) %>% .[, value := 0.0182]),
+        migration_rate = list(
+          source = "Assume same as Digaale",
+          data = setAgeBreaks(0) %>% .[, value := 129.3/1000/365])),
       host = list(
+        population_data = list(
+          source = "UN WPP",
+          data = getData("./data/demography/kilifi/population_size")),
+        contact_data = list(
+          source = "Prem K, Zandvoort KV, Klepac P, Eggo RM, Davies NG, Centre for the Mathematical Modelling of Infectious Diseases COVID-19 Working Group, Cook AR, Jit M. Projecting contact matrices in 177 geographical regions: an update and comparison with empirical data for the COVID-19 era. PLoS computational biology. 2021 Jul 26;17(7):e1009098. https://doi.org/10.1371/journal.pcbi.1009098.",
+          data = getData("./data/demography/kilifi/contact_matrix_host")),
         malnourished = list(
           source = "County Department of Health. Kilifi County SMART Survey Report. 2016. https://www.nutritionhealth.or.ke/wpcontent/uploads/SMART%20Survey%20Reports/Kilifi%20County%20SMART%20Survey% 20Report%20November2016.pdf.",
           data = setAgeBreaks(0) %>% .[, value := 0.0182])))))
@@ -210,7 +239,7 @@ extrapolateContactMatrix = function(popsize_y, household_size_y,
 }
 
 #' overwrite digaale contact data with actual contact data, and extrapolate to other settings
-for(s in c("digaale", "bentiu", "maiduguri_acute")){
+for(s in c("digaale", "bentiu", "maiduguri_acute", "kilifi")){
   cm = extrapolateContactMatrix(data$demography[[s]]$displaced$population_data$data,
                                 data$demography[[s]]$displaced$household_size$data$value, only_matrix = FALSE)  
   

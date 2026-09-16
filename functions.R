@@ -97,6 +97,28 @@ calculateLLprevacc = function(res_prevacc, data){
                         log = TRUE)], by = c("age_group")] %>% .[, sum(V1)]
 }
 
+#' Calculate the log likelihood based on the pre-vaccination model output (at equilibrium)
+calculateLLprevacc_kenya = function(res_prevacc, data){
+  result = res_prevacc %>%
+    .[grepl("idp_", population)] %>%
+    aggregateModelOutput(model_params, data,
+                         by_population = FALSE, by_vaccination_group = FALSE) %>%
+    .[, modelled := value]
+  
+  #' Make sure all modelled value are positive finite proportions
+  if(any(result[, modelled] < 0 | is.infinite(result[, modelled]))) return(-Inf)
+  
+  result %>%
+    merge(data[, -c("from", "to")] %>%
+            melt(measure.vars = model_params$global_settings$compartments_prevalence %>% subset(. != "B"),
+                 variable.name = "compartment", value.name = "observed"),
+          by.x = c("age_group", "compartment"), by.y = c("name", "compartment"), all.x = TRUE) %>%
+    dcast(age_group ~ compartment, value.var = c("modelled", "observed")) %>%
+    .[, .SD[, dmultinom(c(observed_S, observed_VT, observed_NVT),
+                        prob = c(modelled_S, modelled_VT+modelled_B/2, modelled_NVT+modelled_B/2),
+                        log = TRUE)], by = c("age_group")] %>% .[, sum(V1)]
+}
+
 calculateLL_neutral = function(model_params_current, carriage_data, parallel = parallel){
   result_prevacc = runModel(model_params = model_params_current,
                             initial_state = model_params_current$global_settings$initial_states,
@@ -223,6 +245,23 @@ calculateLL = function(model_params_current, carriage_data, parallel = parallel)
     
     #' calculate log-likelihood of model fit to data
     log_ll_total = result_prevacc %>% calculateLLprevacc(carriage_data)
+  }
+  
+  return(list(log_ll_total = log_ll_total))
+}
+
+calculateLL_kenya = function(model_params_current, carriage_data, parallel = parallel){
+  result_prevacc = runModel(model_params = model_params_current,
+                            initial_state = model_params_current$global_settings$initial_states,
+                            steady_state = TRUE, parallel = parallel)
+  
+  log_ll_total = -Inf
+  #' Only continue if no errors or warning, otherwise reject sample by returning -Inf
+  if(result_prevacc$status == 0 & checkModelOutput(result_prevacc$value)){
+    result_prevacc = result_prevacc$value
+    
+    #' calculate log-likelihood of model fit to data
+    log_ll_total = result_prevacc %>% calculateLLprevacc_kenya(carriage_data)
   }
   
   return(list(log_ll_total = log_ll_total))

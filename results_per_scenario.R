@@ -7,7 +7,7 @@ pacman::p_load(data.table, Rcpp, RcppArmadillo, inline, deSolve, rootSolve, magr
 #'  1: working directory of pcvmr (make sure to setwd manually if running interactively)
 #'  2: working directory of pcvm
 #'  3: name of output folder to store objects (e.g. date, or specific scenario name)
-.args = if(interactive()) c(getwd(), "model/metavax", "digaale", "simulations") else commandArgs(trailingOnly = TRUE)
+.args = if(interactive()) c(getwd(), "model/metavax", "kilifi", "simulations") else commandArgs(trailingOnly = TRUE)
 .args = setNames(.args, c("wd", "metavax_dir", "output_subdir", "output_simdir"))
 setwd(.args["wd"])
 
@@ -27,7 +27,11 @@ OUTPUT_RESULTSFOLDER = setOutputFolder(.args["wd"], sprintf("%s/%s/%s", .args["o
 #' Set up project specific functions and parameters
 source("./functions.R")
 source("./data_load_all.R")
-source("./model_setup.R")
+if(.args["output_subdir"] == "kilifi"){
+  source("./model_setup_kilifi.R")
+} else {
+  source("./model_setup.R") 
+}
 
 #' create model params without vaccination
 setting = strsplit(.args["output_subdir"], "_", TRUE)[[1]][1]
@@ -142,7 +146,7 @@ saveRDS(posterior_runs_summarized[outcome == "prevalence"],
 saveRDS(posterior_runs_summarized_impact,
         sprintf("%s/plotdata_posterior_runs_summarized_impact.RDS", OUTPUT_RESULTSFOLDER))
 
-
+pacman::p_load(patchwork)
 (plot_fig1 = plot_prevalence_fig+
   (plot_incidence_impact)+
   plot_annotation(tag_levels = "A")+
@@ -282,8 +286,10 @@ incremental_NNV = incidence_impact[variable == "absolute_impact" & vaccine_strat
   }) %>% rbindlist())
 
 plot_incremental_NNV = incremental_NNV %>%
-  ggplot(aes(x = factor(comparison, sprintf("%s − %s", vaccination_strategies_plot_settings[-1, name], vaccination_strategies_plot_settings[-.N, name])),
-             xend = factor(comparison, sprintf("%s − %s", vaccination_strategies_plot_settings[-1, name], vaccination_strategies_plot_settings[-.N, name])),
+  ggplot(aes(x = factor(comparison, sprintf("%s − %s", vaccination_strategies_plot_settings[-1, name],
+                                            vaccination_strategies_plot_settings[-.N, name])),
+             xend = factor(comparison, sprintf("%s − %s", vaccination_strategies_plot_settings[-1, name],
+                                               vaccination_strategies_plot_settings[-.N, name])),
              y = incremental_NNV))+
   facet_grid(factor(age_group, c("[0y, 120y)", "[0y, 1y)"), c("all ages", "infants"))~factor(time, c(0.5, 1, 2, 3), c("0-6m", "0-1y", "0-2y", "0-3y")), scales="free")+
   geom_lv(varwidth = TRUE, width.method = "height",
